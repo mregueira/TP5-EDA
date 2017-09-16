@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "viewer.h"
 #include <iostream>
+#include <string>
 #include <allegro5\allegro_image.h>
 
 #define DISP_W 1920
@@ -55,9 +56,8 @@ int viewer::init_allegro(void)
 		int img_load_ok = 1;
 		for (int i = 0; i < WWALKING; i++)
 		{
-			int aux = i + 1;
 			string wwalk_num = "Worms Images/wwalking/wwalk-F";
-			wwalk_num += aux + ".png";
+			wwalk_num += to_string(i+1) + ".png";
 
 			wwalking[i] = al_load_bitmap(wwalk_num.c_str());
 			if (!wwalking[i]) {
@@ -84,13 +84,12 @@ int viewer::init_allegro(void)
 		int img_load_ok = 1;
 		for (int i = 0; i < WJUMP; i++)
 		{
-			int aux = i + 1;
-			string wjump_num = "Worms Images/wwjump/wjump-F";
-			wjump_num += aux + ".png";
+			string wjump_num = "Worms Images/wjump/wjump-F";
+			wjump_num += to_string(i+1) + ".png";
 
 			wjump[i] = al_load_bitmap(wjump_num.c_str());
 			if (!wjump[i]) {
-				int pos = wjump_num.find("wwalk");
+				int pos = wjump_num.find("wjump");
 				string img_failed = wjump_num.substr(pos);
 				cout << "failed to load image " << img_failed.c_str() << endl;
 				img_load_ok = 0;
