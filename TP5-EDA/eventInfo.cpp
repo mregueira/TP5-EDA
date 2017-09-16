@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "eventInfo.h"
 
 eventInfo::eventInfo(unsigned int eventData_, unsigned int userData_) {

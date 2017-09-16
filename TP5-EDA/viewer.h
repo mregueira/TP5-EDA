@@ -1,4 +1,5 @@
-#pragma once
+#ifndef VIEWER_H
+#define VIEWER_H
 #include <allegro5\allegro.h>
 
 #define WWALKING 15
@@ -18,4 +19,6 @@ private:
 	ALLEGRO_BITMAP *wwalking[WWALKING];
 	ALLEGRO_BITMAP *wjump[WJUMP];
 };
+
+#endif // !VIEWER_H
 
