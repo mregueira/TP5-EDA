@@ -19,8 +19,8 @@ worms::startMov(char _key) { //checks if the key is a move key for the worm, if 
 			state = monitorMov;
 			auxcnt = 0;
 		}else if (state == end_mov) {
-			state = monitorMov;
-			auxcnt = framecnt;
+			if (dir == left)
+				state = moving;
 		}
 	}else if (Keys[move_right] == _key) {
 		if (state == idle) {
@@ -28,8 +28,8 @@ worms::startMov(char _key) { //checks if the key is a move key for the worm, if 
 			state = monitorMov;
 			auxcnt = 0;
 		}else if (state == end_mov) {
-			state = monitorMov;
-			auxcnt = framecnt;
+			if(dir==right)
+				state = moving;
 		}
 	}else {
 		return false;
@@ -39,17 +39,31 @@ worms::startMov(char _key) { //checks if the key is a move key for the worm, if 
 
 bool
 worms::stopMov(char _key){
-	if ((Keys[move_right] == _key) || (Keys[move_left] == _key)){
-		if (state == moving) {
-			state = end_mov;
-			
+	if (Keys[move_right] == _key){
+		if (dir == right) {
+			if (state == moving) {
+				state = end_mov;
+			}
+			else if (state == monitorMov) {
+				state = end_mov;
+			}
 		}
-		else if (state == monitorMov) {
-			state = idle;
-		}
-		return true;
 	}
-	return false;
+	else if (Keys[move_left] == _key) {
+		if (dir == left) {
+			if (state == moving) {
+				state = end_mov;
+
+			}
+			else if (state == monitorMov) {
+				state = end_mov;
+			}
+		}
+	}
+	else {
+		return false;
+	}
+	return true;
 }
 
 int
@@ -107,7 +121,7 @@ Physics::getAng() {
 	return lngjmpAngle;
 }
 
-bool
+void
 worms::setKeys(char left, char right, char jmp) {
 	Keys[move_left] = left;
 	Keys[move_right] = right;
@@ -118,12 +132,11 @@ bool
 worms::startJum(char _key){
 	if(Keys[jump]==_key){
 		if (state == idle) {
-			state = monitorJmp;
+			state = jumping;
 			auxcnt = 0;
 		}
 		else if (state == end_jmp) {
-			state = monitorJmp;
-			auxcnt = framecnt;
+			state = jumping;
 		}
 	}
 	else {
@@ -139,9 +152,6 @@ worms::stopJum(char _key){
 			state = end_jmp;
 
 		}
-		else if (state == monitorJmp) {
-			state = end_jmp;
-		}
 		return true;
 	}
 	return false;
@@ -154,11 +164,6 @@ worms::Update(){
 		case monitorMov:
 			if((framecnt - auxcnt) >= 5){
 				state = moving;
-			}
-			break;
-		case monitorJmp:
-			if ((framecnt - auxcnt) >= 5) {
-				state = jumping;
 			}
 			break;
 		case moving:
@@ -182,4 +187,47 @@ worms::Update(){
 	}
 }
 
-//idle, monitorMov, monitorJmp, moving, jumping, end_mov, end_jmp
+void
+worms::movePos(){
+	if (framecnt==22 || framecnt==36 || framecnt==50) {
+		if (dir == right) {
+			pos.setX(pos.getX()+wormPhs.getVx()/3);
+		}
+		else {
+			pos.setX(pos.getX() - wormPhs.getVx() / 3);
+		}
+	}
+}
+
+void
+worms::jumpPos() {
+	if (framecnt == 4) {
+		if (dir == right) {
+			pos.setX(pos.getX() + 2.4);
+		}
+		else {
+			pos.setX(pos.getX() - 2.4);
+		}		 
+	}																		 	
+	else if ((framecnt > 4) && (framecnt <= 36)) {				
+		if (dir == right) {
+			pos.setX(pos.getX() + 2.32);
+		}
+		else {
+			pos.setX(pos.getX() - 2.32);
+		}
+	}
+	if (framecnt > 3 && framecnt <= 36) {  //incrementalmente la ecuacion de tiro oblivuo resulta:
+		pos.setY(pos.getY - wormPhs.getVy() + wormPhs.getGrav()*((framecnt-8) + 0.5)); //y2=y1-vY+g(t+1/2)
+	}
+}
+
+void
+worms::interruptMov() {
+	state = idle;
+}
+
+void
+worms::setPos(position newPos) {
+	pos = newPos;
+}
