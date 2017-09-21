@@ -2,38 +2,51 @@
 //
 
 #include "stdafx.h"
+#include <iostream>
 #include "eventInfo.h"
+#include "viewer.h"
 
-void dipatch(eventInfo& cevent);
-
+using namespace std;
 
 int main()
 {
+	if (!al_init()) {
+		cout << "failed to initialize allegro!\n" << endl;
+		return -1;
+	}
+
+	viewer view;
+
+	int is_ok_v = view.init_allegro();
+	if (!is_ok_v) {
+		return -1; // No se inicio bien alguna cosa
+	}
+
 	eventInfo cevent;
+	int is_ok = cevent.init_allegro_timer();
+	if (!is_ok) {
+		return -1; // No se pudo inicializar el timer
+	}
 
 	do {
-		cevent = getNextEvent();
-		if (cevent.getEventData != NO_MOVE)
-			dipatch(cevent);
-	} while (cevent.getEventData != QUIT);
+		cevent.getNextEvent();
+		cevent.dispatch(view);
+	} while (cevent.getEventData() != QUIT);
 
     return 0;
 }
 
 
-void dipatch(eventInfo& cevent) {
-
-}
-
 /* Codigo de prueba del viewer
 #include "viewer.h"
 
-#define W 1920
-#define H 696
 
 viewer view;
 
-view.init_allegro();
+int is_ok_v = view.init_allegro();
+if(!is_ok_v){
+	return -1; // No se inicio bien alguna cosa
+}
 
 for (int i = 0; i < 5; i++)
 {

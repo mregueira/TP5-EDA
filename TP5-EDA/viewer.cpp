@@ -3,9 +3,6 @@
 #include <iostream>
 #include <allegro5\allegro_image.h>
 
-#define DISP_W 1920
-#define DISP_H 696
-
 #define NORMAL_WORM 0
 #define START_WORM_UP 6
 #define END_WORM_UP 8
@@ -48,11 +45,6 @@ viewer::~viewer()
 int viewer::init_allegro(void)
 {
 	int ret = 1;
-
-	if (!al_init()) {
-		cout << "failed to initialize allegro!\n" << endl;
-		ret = 0;
-	}
 
 	if ((ret)&&(!al_init_image_addon())) {
 		cout << "failed to initialize image addon !\n" << endl;
